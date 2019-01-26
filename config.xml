@@ -26,6 +26,6 @@
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
-    <plugin name="cordova-plugin-whitelist" spec="1" />
     <engine name="android" spec="^7.1.4" />
+    <plugin name="cordova-plugin-whitelist" spec="1" />
 </widget>

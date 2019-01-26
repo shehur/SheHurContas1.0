@@ -13,7 +13,7 @@
     <body>
 
         <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-          <a class="navbar-brand" href="index.html">SheHur Contas</a>
+          <a class="navbar-brand" href="index.html" onclick="colore(this)">SheHur Contas</a>
 
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -21,10 +21,10 @@
 
           <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
-              <li class="nav-item">
+              <li class="nav-item" onclick="colore(this)">
                 <a class="nav-link text-white" href="obrigacoes.html">Obrigações</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" onclick="colore(this)">
                 <a class="nav-link text-white" href="entradas.html">Entradas</a>
               </li>
             </ul>
@@ -39,18 +39,21 @@
           <h2 class="text-danger">Obrigações</h2>
           <strong><div id="total" class="bg-danger text-white" style="padding: 0 5px 0 5px; width: 100%;" align="right">TOTAL: R$ 0</div></strong><br><br>
 
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>R$ Valor</th>
-                <th width="15%">Operações</th>
-              </tr>
-            </thead>
-            <tbody id="linhas">
+          <div style="overflow: auto; height: 365px;">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>R$ Valor</th>
+                  <th width="15%">Operações</th>
+                </tr>
+              </thead>
+              <tbody id="linhas">
 
-            </tbody>
-          </table>
+              </tbody>
+            </table>            
+          </div>
+
         </div>
 
         <div class="modal fade" id="myModal">
@@ -160,5 +163,10 @@
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/obrigacoes.js"></script>
+        <script type="text/javascript">
+          function colore(o) {
+            o.style.backgroundColor = '#33353F';
+          }
+        </script>
     </body>
 </html>
