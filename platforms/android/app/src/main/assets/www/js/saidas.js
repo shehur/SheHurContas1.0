@@ -10,8 +10,34 @@ var evalor = document.getElementById('evalor');
 var obrigacao = document.getElementById('obrigacao');
 
 function preparaCadastro() {
-	nome.value = '';
+	nome.value = retornaData();
 	valor.value = '';
+}
+
+function retornaData() {
+	var data = new Date();
+
+	var dia = data.getDate();
+	var mes = data.getMonth()+1;
+	var ano = data.getFullYear();
+
+	var dia_semana = parseInt(data.getDay());
+	console.log('dia: ', dia_semana);
+	var nome_dia = 'Dia';
+	switch(dia_semana) {
+		case 0: nome_dia = 'Dom'; break;
+		case 1: nome_dia = 'Seg'; break;
+		case 2: nome_dia = 'Ter'; break;
+		case 3: nome_dia = 'Qua'; break;
+		case 4: nome_dia = 'Qui'; break;
+		case 5: nome_dia = 'Sex'; break;
+		case 6: nome_dia = 'Sáb'; break;
+		default: nome_dia = 'Dia';
+	}
+
+	var str_data = dia+'/'+mes+'/'+ano+': '+nome_dia;
+	str_data = str_data.toString().trim();
+	return str_data;
 }
 
 function cadastrar() {
@@ -22,14 +48,14 @@ function cadastrar() {
 	Valor = Valor.replace(',', '.');
 
 	var objJSON = [];
-	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	var banco = localStorage.getItem("shehur-contas-saidas");
 	if(banco) {
 		objJSON = JSON.parse(banco.toString());
 	}
 
-	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: 0};
+	objObrigacoes = {Nome: Nome, Valor: Valor};
 	objJSON.push(objObrigacoes);
-	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
+	localStorage.setItem('shehur-contas-saidas', JSON.stringify(objJSON));
 	selecionar();
 }
 
@@ -50,19 +76,19 @@ function editar() {
 	Valor = Valor.replace(',', '.');
 
 	var objJSON = [];
-	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	var banco = localStorage.getItem("shehur-contas-saidas");
 	if(banco) {
 		objJSON = JSON.parse(banco.toString());
 	}
 
-	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: 0};
+	objObrigacoes = {Nome: Nome, Valor: Valor};
 	objJSON[Id] = objObrigacoes;
-	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
+	localStorage.setItem('shehur-contas-saidas', JSON.stringify(objJSON));
 	selecionar();
 }
 
 function deletar() {
-	localStorage.setItem('shehur-contas-obrigacoes', "");
+	localStorage.setItem('shehur-contas-saidas', "");
 	selecionar();
 }
 
@@ -76,13 +102,13 @@ function deletarUM() {
 	var Id = parseInt(did.value);
 
 	var objJSON = [];
-	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	var banco = localStorage.getItem("shehur-contas-saidas");
 	if(banco) {
 		objJSON = JSON.parse(banco.toString());
 	}
 
 	objJSON.splice(Id, 1);
-	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
+	localStorage.setItem('shehur-contas-saidas', JSON.stringify(objJSON));
 	selecionar();	
 }
 
@@ -90,7 +116,7 @@ selecionar();
 function selecionar() {
 	var soma = 0;
 	var objJSON = [];
-	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	var banco = localStorage.getItem("shehur-contas-saidas");
 	if(banco) {
 		objJSON = JSON.parse(banco.toString());
 	}
@@ -101,14 +127,9 @@ function selecionar() {
 		if(item.Valor.toString().trim().length <= 0)
 			item.Valor = 0;
 
-		var marcacao = parseInt(item.Marcado);
-		var str = '';
-		if(marcacao > 0) str = 'checked';
-		else soma += parseFloat(item.Valor);
-
+		soma += parseFloat(item.Valor);
 		linha += 
 		"<tr>" +
-			"<td><label class='switch'><input type='checkbox' id='check_" + i + "' onchange='marcar(" + i + ")' " + str + "><span class='slider round'></span></label></td>" +
 			"<td id='nome_" + i + "'>" + item.Nome + "</td>" +
 			"<td id='valor_" + i + "'>R$ " + item.Valor + "</td>" +
 			"<td align='right'><button type='button' class='btn btn-primary' onclick='selecionarUm(" + i + ")' data-toggle='modal' data-target='#modalEditar'>e</button>" +
@@ -119,47 +140,4 @@ function selecionar() {
 	linhas.innerHTML = linha;
 	soma = Math.abs(soma);
 	total.innerText = 'TOTAL: R$ ' + soma;
-}
-
-function atualizaSoma() {
-	var soma = 0;
-	var objJSON = [];
-	var banco = localStorage.getItem("shehur-contas-obrigacoes");
-	if(banco) {
-		objJSON = JSON.parse(banco.toString());
-	}
-
-	objJSON.forEach((item) => {
-		if(item.Valor.toString().trim().length <= 0)
-			item.Valor = 0;
-
-		var marcacao = parseInt(item.Marcado);
-		if(marcacao <= 0) soma += parseFloat(item.Valor);
-	});
-	soma = Math.abs(soma);
-	total.innerText = 'TOTAL: R$ ' + soma;
-}
-
-function marcar(index=-1) {
-	var Id = parseInt(index);
-	var Nome = document.getElementById('nome_'+index).innerText.toString().trim();
-	if(Nome.toString().trim().length <= 0) Nome = 'Sem nome';
-	var Valor = document.getElementById('valor_'+index).innerText.replace('R$ ', '').toString().trim();
-	if(Valor.toString().trim().length <= 0) Valor = '0';
-	Valor = Valor.replace(',', '.');
-
-	var check = document.getElementById('check_'+index);
-	var Marcado = 0;
-	if(check.checked) Marcado = 1;
-
-	var objJSON = [];
-	var banco = localStorage.getItem("shehur-contas-obrigacoes");
-	if(banco) {
-		objJSON = JSON.parse(banco.toString());
-	}
-
-	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: Marcado};
-	objJSON[Id] = objObrigacoes;
-	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
-	atualizaSoma();
 }

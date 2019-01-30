@@ -11,8 +11,34 @@ var evalor = document.getElementById('evalor');
 var obrigacao = document.getElementById('obrigacao');
 
 function preparaCadastro() {
-	nome.value = '';
+	nome.value = retornaData();
 	valor.value = '';
+}
+
+function retornaData() {
+	var data = new Date();
+
+	var dia = data.getDate();
+	var mes = data.getMonth()+1;
+	var ano = data.getFullYear();
+
+	var dia_semana = parseInt(data.getDay());
+	console.log('dia: ', dia_semana);
+	var nome_dia = 'Dia';
+	switch(dia_semana) {
+		case 0: nome_dia = 'Dom'; break;
+		case 1: nome_dia = 'Seg'; break;
+		case 2: nome_dia = 'Ter'; break;
+		case 3: nome_dia = 'Qua'; break;
+		case 4: nome_dia = 'Qui'; break;
+		case 5: nome_dia = 'Sex'; break;
+		case 6: nome_dia = 'Sáb'; break;
+		default: nome_dia = 'Dia';
+	}
+
+	var str_data = dia+'/'+mes+'/'+ano+': '+nome_dia;
+	str_data = str_data.toString().trim();
+	return str_data;
 }
 
 function cadastrar() {
@@ -113,9 +139,10 @@ function selecionar() {
 		i++;
 	});
 	linhas.innerHTML = linha;
+	soma = Math.abs(soma);
 	total.innerText = 'TOTAL: R$ ' + soma;
 
-	var Restante = parseFloat(retornaObrigacoes())-parseFloat(soma);
+	var Restante = parseFloat(retornaObrigacoes())-(parseFloat(soma)-parseFloat(retornaSaidas()));
 	if(Restante <= 0)
 		totalR.innerText = 'OBJETIVO CONCLUÍDO';
 	else
@@ -123,6 +150,23 @@ function selecionar() {
 
 	if(Restante < 0)
 		totalR.innerText = 'OBJETIVO CONCLUÍDO - LUCRO: R$ ' + Math.abs(Restante);
+}
+
+function retornaSaidas() {
+	var soma = 0;
+	var objJSON = [];
+	var banco = localStorage.getItem("shehur-contas-saidas");
+	if(banco) {
+	  objJSON = JSON.parse(banco.toString());
+	}
+
+	objJSON.forEach((item) => {
+	  if(item.Valor.toString().trim().length <= 0)
+	    item.Valor = 0;
+	  soma += parseFloat(item.Valor);
+	});
+	soma = Math.abs(soma);
+	return soma;
 }
 
 function retornaObrigacoes() {
@@ -136,8 +180,9 @@ function retornaObrigacoes() {
 	objJSON.forEach((item) => {
 	  if(item.Valor.toString().trim().length <= 0)
 	    item.Valor = 0;
-	  soma += parseFloat(item.Valor);
+	  var marcacao = parseInt(item.Marcado);
+	  if(marcacao <= 0) soma += parseFloat(item.Valor);
 	});
-
+	soma = Math.abs(soma);
 	return soma;
 }

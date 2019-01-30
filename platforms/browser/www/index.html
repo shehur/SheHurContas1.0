@@ -4,6 +4,7 @@
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <meta charset="utf-8">
         <title>SheHur Contas</title>
 
         <link rel="stylesheet" href="bootstrap4/bootstrap.min.css">
@@ -33,6 +34,12 @@
               </li>
               <li class="nav-item" onclick="colore(this)">
                 <a class="nav-link text-white" href="entradas.html">Entradas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="saidas.html">Saídas</a>
+              </li>
+              <li class="nav-item" onclick="colore(this)">
+                <a class="nav-link text-white" href="estatisticas.html">Estatísticas</a>
               </li>
             </ul>
           </div>
@@ -71,10 +78,14 @@
           var totalR = document.getElementById('totalR');
           var lucro = document.getElementById('lucro');
 
-          totalO.innerText = 'R$ ' + retornaObrigacoes();
-          totalE.innerText = 'R$ ' + retornaEntradas();
+          var retornaEntradas = retornaEntradas();
+          var retornaObrigacoes = retornaObrigacoes();
+          var retornaSaidas = retornaSaidas();
 
-          var Restante = parseFloat(retornaObrigacoes())-parseFloat(retornaEntradas());
+          totalO.innerText = 'R$ ' + retornaObrigacoes;
+          totalE.innerText = 'R$ ' + retornaEntradas;
+
+          var Restante = parseFloat(retornaObrigacoes)-(parseFloat(retornaEntradas-parseFloat(retornaSaidas)));
           if(Restante <= 0)
             totalR.innerText = 'OBJETIVO CONCLUÍDO';
           else
@@ -97,9 +108,10 @@
             objJSON.forEach((item) => {
               if(item.Valor.toString().trim().length <= 0)
                 item.Valor = 0;
-              soma += parseFloat(item.Valor);
+              var marcacao = parseInt(item.Marcado);
+              if(marcacao <= 0) soma += parseFloat(item.Valor);
             });
-
+            soma = Math.abs(soma);
             return soma;
           }
 
@@ -116,18 +128,43 @@
                 item.Valor = 0;
               soma += parseFloat(item.Valor);
             });
-
+            soma = Math.abs(soma);
             return soma;
+          }
+
+          function retornaSaidas() {
+            var soma = 0;
+            var objJSON = [];
+            var banco = localStorage.getItem("shehur-contas-saidas");
+            if(banco) {
+              objJSON = JSON.parse(banco.toString());
+            }
+
+            objJSON.forEach((item) => {
+              if(item.Valor.toString().trim().length <= 0)
+                item.Valor = 0;
+              soma += parseFloat(item.Valor);
+            });
+            soma = Math.abs(soma);
+            return soma;
+          }
+
+          function retornaLabel() {
+            var label = 'Entradas';
+            if(retornaSaidas > 0) label = 'Entradas - Saídas';
+            else label = 'Entradas';
+            label = label.toString().trim();
+            return label;
           }
 
           var ctx = document.getElementById("myChart");
           var myChart = new Chart(ctx, {
               type: 'bar',
               data: {
-                  labels: ["Obrigações", "Entradas"],
+                  labels: ["Obrigações", retornaLabel()],
                   datasets: [{
                       label: 'Obrigações',
-                      data: [retornaObrigacoes(), retornaEntradas()],
+                      data: [retornaObrigacoes, retornaEntradas - retornaSaidas],
                       backgroundColor: [
                           'rgba(255, 99, 132, 1)',
                           'rgba(75, 192, 192, 1)',

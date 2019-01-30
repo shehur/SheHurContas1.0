@@ -27,7 +27,7 @@ function cadastrar() {
 		objJSON = JSON.parse(banco.toString());
 	}
 
-	objObrigacoes = {Nome: Nome, Valor: Valor};
+	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: 0};
 	objJSON.push(objObrigacoes);
 	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
 	selecionar();
@@ -55,7 +55,7 @@ function editar() {
 		objJSON = JSON.parse(banco.toString());
 	}
 
-	objObrigacoes = {Nome: Nome, Valor: Valor};
+	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: 0};
 	objJSON[Id] = objObrigacoes;
 	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
 	selecionar();
@@ -101,9 +101,14 @@ function selecionar() {
 		if(item.Valor.toString().trim().length <= 0)
 			item.Valor = 0;
 
-		soma += parseFloat(item.Valor);
+		var marcacao = parseInt(item.Marcado);
+		var str = '';
+		if(marcacao > 0) str = 'checked';
+		else soma += parseFloat(item.Valor);
+
 		linha += 
 		"<tr>" +
+			"<td><label class='switch'><input type='checkbox' id='check_" + i + "' onchange='marcar(" + i + ")' " + str + "><span class='slider round'></span></label></td>" +
 			"<td id='nome_" + i + "'>" + item.Nome + "</td>" +
 			"<td id='valor_" + i + "'>R$ " + item.Valor + "</td>" +
 			"<td align='right'><button type='button' class='btn btn-primary' onclick='selecionarUm(" + i + ")' data-toggle='modal' data-target='#modalEditar'>e</button>" +
@@ -112,5 +117,49 @@ function selecionar() {
 		i++;
 	});
 	linhas.innerHTML = linha;
+	soma = Math.abs(soma);
 	total.innerText = 'TOTAL: R$ ' + soma;
+}
+
+function atualizaSoma() {
+	var soma = 0;
+	var objJSON = [];
+	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	if(banco) {
+		objJSON = JSON.parse(banco.toString());
+	}
+
+	objJSON.forEach((item) => {
+		if(item.Valor.toString().trim().length <= 0)
+			item.Valor = 0;
+
+		var marcacao = parseInt(item.Marcado);
+		if(marcacao <= 0) soma += parseFloat(item.Valor);
+	});
+	soma = Math.abs(soma);
+	total.innerText = 'TOTAL: R$ ' + soma;
+}
+
+function marcar(index=-1) {
+	var Id = parseInt(index);
+	var Nome = document.getElementById('nome_'+index).innerText.toString().trim();
+	if(Nome.toString().trim().length <= 0) Nome = 'Sem nome';
+	var Valor = document.getElementById('valor_'+index).innerText.replace('R$ ', '').toString().trim();
+	if(Valor.toString().trim().length <= 0) Valor = '0';
+	Valor = Valor.replace(',', '.');
+
+	var check = document.getElementById('check_'+index);
+	var Marcado = 0;
+	if(check.checked) Marcado = 1;
+
+	var objJSON = [];
+	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	if(banco) {
+		objJSON = JSON.parse(banco.toString());
+	}
+
+	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: Marcado};
+	objJSON[Id] = objObrigacoes;
+	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
+	atualizaSoma();
 }
