@@ -37,7 +37,9 @@ function retornaMinimo() {
     retorno = nome+' = R$ '+minimo;
   else
     retorno = 'R$ '+minimo;
-  retorno = retorno.replace(': ', '-');
+  retorno = retorno.replace(': ', '-').trim();
+
+  if((retorno == 'R$ Infinity')||(retorno == 'R$ NaN')) retorno = 'R$ 0';
 
   return retorno;
 }
@@ -73,7 +75,9 @@ function retornaMaximo() {
     retorno = nome+' = R$ '+maximo;
   else
     retorno = 'R$ '+maximo;
-  retorno = retorno.replace(': ', '-');
+  retorno = retorno.replace(': ', '-').trim();
+
+  if((retorno == 'R$ Infinity')||(retorno == 'R$ NaN')) retorno = 'R$ 0';
 
   return retorno;
 }
@@ -107,6 +111,9 @@ function retornaMedia() {
   media = Math.abs(media);
   var retorno = media;
   retorno = 'R$ '+media;
+  retorno = retorno.trim();
+
+  if((retorno == 'R$ Infinity')||(retorno == 'R$ NaN')) retorno = 'R$ 0';
 
   return retorno;
 }

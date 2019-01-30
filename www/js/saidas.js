@@ -130,7 +130,7 @@ function selecionar() {
 		soma += parseFloat(item.Valor);
 		linha += 
 		"<tr>" +
-			"<td id='nome_" + i + "'>" + item.Nome + "</td>" +
+			"<td id='nome_" + i + "' style='word-wrap: break-word; word-break: break-all;'>" + item.Nome + "</td>" +
 			"<td id='valor_" + i + "'>R$ " + item.Valor + "</td>" +
 			"<td align='right'><button type='button' class='btn btn-primary' onclick='selecionarUm(" + i + ")' data-toggle='modal' data-target='#modalEditar'>e</button>" +
 			"<button type='button' class='btn btn-danger' data-toggle='modal' onclick='selecionarDel(" + i + ")' data-target='#modalDeletar'>x</button></td>" +

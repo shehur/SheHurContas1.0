@@ -97,14 +97,15 @@
 
           retornaMedia = parseFloat(retornaMedia.toString().replace('R$', '').trim());
           retornaMediaDesejada = parseFloat(retornaMediaDesejada.toString().replace('R$', '').trim());
-          if(retornaMedia < retornaMediaDesejada) {
-            abaixo.style.display = 'block';
-          }else if(retornaMedia == retornaMediaDesejada) {
-            namedia.style.display = 'block';
-          }else {
-            acima.style.display = 'block';
+          if(retornaMedia > 0) {
+            if(retornaMedia < retornaMediaDesejada) {
+              abaixo.style.display = 'block';
+            }else if(retornaMedia == retornaMediaDesejada) {
+              namedia.style.display = 'block';
+            }else {
+              acima.style.display = 'block';
+            }
           }
-
         </script>
     </body>
 </html>
