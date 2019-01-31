@@ -30,6 +30,24 @@ function cadastrar() {
 	objObrigacoes = {Nome: Nome, Valor: Valor, Marcado: 0};
 	objJSON.push(objObrigacoes);
 	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(objJSON));
+	localStorage.setItem('shehur-contas-obrigacoes-backup', JSON.stringify(objJSON));
+	selecionar();
+}
+
+function recuperarDados() {
+	var recJSON = [];
+	var bancoRec = localStorage.getItem("shehur-contas-obrigacoes-backup");
+	if(bancoRec) {
+		recJSON = JSON.parse(bancoRec.toString());
+	}	
+
+	var objJSON = [];
+	var banco = localStorage.getItem("shehur-contas-obrigacoes");
+	if(banco) {
+		objJSON = JSON.parse(banco.toString());
+	}
+
+	localStorage.setItem('shehur-contas-obrigacoes', JSON.stringify(recJSON));
 	selecionar();
 }
 
