@@ -30,8 +30,15 @@ function retornaMinimo() {
     if(parseFloat(item.Valor) == minimo)
       nome = item.Nome;
   });
+  if(nome.toString().trim().length > 0) {
+    nome = nome.split('/');
+    dia = nome[2].split(': ');
+    dia = dia[1];
+    nome = nome[0]+'/'+nome[1]+'-'+dia;
+  }
 
   minimo = Math.abs(minimo);
+  minimo = minimo.toFixed(0);
   var retorno = minimo;
   if(nome.toString().trim().length > 0)
     retorno = nome+' = R$ '+minimo;
@@ -68,8 +75,15 @@ function retornaMaximo() {
     if(parseFloat(item.Valor) == maximo)
       nome = item.Nome;
   });
+  if(nome.toString().trim().length > 0) {
+    nome = nome.split('/');
+    dia = nome[2].split(': ');
+    dia = dia[1];
+    nome = nome[0]+'/'+nome[1]+'-'+dia;
+  }
 
   maximo = Math.abs(maximo);
+  maximo = maximo.toFixed(0);
   var retorno = maximo;
   if(nome.toString().trim().length > 0)
     retorno = nome+' = R$ '+maximo;
@@ -109,6 +123,7 @@ function retornaMedia() {
   media = Math.round(soma / count);
 
   media = Math.abs(media);
+  media = media.toFixed(0);
   var retorno = media;
   retorno = 'R$ '+media;
   retorno = retorno.trim();
@@ -188,12 +203,26 @@ function retornaObrigacoes() {
 }
 
 function retornaMediaDesejada() {
-  var obrigacoes = parseFloat(retornaObrigacoes());
-  var dias_por_semana = parseFloat(retornaDiasPorSemana())*4;
-  var media_desejada = parseFloat(obrigacoes / dias_por_semana);
+  if(contaEntradas() < 7) {
+    return 'em breve';
+  }else {
+    var obrigacoes = parseFloat(retornaObrigacoes());
+    var dias_por_semana = parseFloat(retornaDiasPorSemana())*4;
+    var media_desejada = parseFloat(obrigacoes / dias_por_semana);
 
-  media_desejada = Math.abs(media_desejada);
-  media_desejada = Math.round(media_desejada);
-  media_desejada = 'R$ '+media_desejada;
-  return media_desejada;
+    media_desejada = Math.abs(media_desejada);
+    media_desejada = Math.round(media_desejada);
+    media_desejada = media_desejada.toFixed(0);
+    media_desejada = 'R$ '+media_desejada;
+    return media_desejada;
+  }
+}
+
+function contaEntradas() {
+  var objJSON = [];
+  var banco = localStorage.getItem("shehur-contas-entradas");
+  if(banco) {
+    objJSON = JSON.parse(banco.toString());
+  }
+  return parseInt(objJSON.length);
 }

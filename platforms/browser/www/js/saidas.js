@@ -266,5 +266,6 @@ function selecionar() {
 	});
 	linhas.innerHTML = linha;
 	soma = Math.abs(soma);
+	soma = soma.toFixed(2);
 	total.innerText = 'TOTAL: R$ ' + soma;
 }

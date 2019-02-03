@@ -136,6 +136,7 @@ function selecionar() {
 	});
 	linhas.innerHTML = linha;
 	soma = Math.abs(soma);
+	soma = soma.toFixed(2);
 	total.innerText = 'TOTAL: R$ ' + soma;
 }
 
@@ -155,6 +156,7 @@ function atualizaSoma() {
 		if(marcacao <= 0) soma += parseFloat(item.Valor);
 	});
 	soma = Math.abs(soma);
+	soma = soma.toFixed(2);
 	total.innerText = 'TOTAL: R$ ' + soma;
 }
 

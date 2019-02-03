@@ -86,6 +86,7 @@
           totalE.innerText = 'R$ ' + retornaEntradas;
 
           var Restante = parseFloat(retornaObrigacoes)-(parseFloat(retornaEntradas-parseFloat(retornaSaidas)));
+          Restante = Restante.toFixed(2);
           if(Restante <= 0)
             totalR.innerText = 'OBJETIVO CONCLUÍDO';
           else
@@ -95,7 +96,6 @@
             lucro.innerText = 'LUCRO: R$ ' + Math.abs(Restante);
             lucro.style.display = 'block';
           }
-
 
           function retornaObrigacoes() {
             var soma = 0;
@@ -112,6 +112,7 @@
               if(marcacao <= 0) soma += parseFloat(item.Valor);
             });
             soma = Math.abs(soma);
+            soma = soma.toFixed(2);
             return soma;
           }
 
@@ -129,6 +130,7 @@
               soma += parseFloat(item.Valor);
             });
             soma = Math.abs(soma);
+            soma = soma.toFixed(2);
             return soma;
           }
 
@@ -146,6 +148,7 @@
               soma += parseFloat(item.Valor);
             });
             soma = Math.abs(soma);
+            soma = soma.toFixed(2);
             return soma;
           }
 

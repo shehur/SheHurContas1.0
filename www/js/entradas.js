@@ -139,9 +139,11 @@ function selecionar() {
 	});
 	linhas.innerHTML = linha;
 	soma = Math.abs(soma);
+	soma = soma.toFixed(2);
 	total.innerText = 'TOTAL: R$ ' + soma;
 
 	var Restante = parseFloat(retornaObrigacoes())-(parseFloat(soma)-parseFloat(retornaSaidas()));
+	Restante = Restante.toFixed(2);
 	if(Restante <= 0)
 		totalR.innerText = 'OBJETIVO CONCLUÍDO';
 	else
